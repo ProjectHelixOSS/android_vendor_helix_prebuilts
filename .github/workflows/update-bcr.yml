@@ -1,0 +1,62 @@
+name: Auto-Update BCR APK
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  update-apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Fetch, download, and extract APK
+        id: fetch_release
+        run: |
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/chenxiaolong/BCR/releases/latest)
+          LATEST_TAG=$(echo "$LATEST_RELEASE" | jq -r .tag_name)
+          echo "Latest upstream tag: $LATEST_TAG"
+          echo "TAG=$LATEST_TAG" >> $GITHUB_ENV
+
+          ZIP_URL=$(echo "$LATEST_RELEASE" | jq -r '.assets[] | select(.name | endswith(".zip")) | .browser_download_url' | head -n 1)
+
+          if [ -z "$ZIP_URL" ] || [ "$ZIP_URL" == "null" ]; then
+            echo "Error: No ZIP found in the latest release!"
+            exit 1
+          fi
+
+          echo "Downloading ZIP from: $ZIP_URL"
+          wget -qO bcr-release.zip "$ZIP_URL"
+
+          echo "Extracting ZIP..."
+          unzip -q bcr-release.zip -d bcr_temp
+
+          APK_PATH=$(find bcr_temp -name "*.apk" | head -n 1)
+
+          if [ -z "$APK_PATH" ]; then
+            echo "Error: Could not find an APK inside the extracted ZIP!"
+            exit 1
+          fi
+
+          echo "Found APK at: $APK_PATH"
+
+          mkdir -p bcr/prebuilts/product/priv-app/bcr/
+          mv "$APK_PATH" bcr/prebuilts/product/priv-app/bcr/bcr.apk
+
+          rm -rf bcr-release.zip bcr_temp
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add bcr/prebuilts/product/priv-app/bcr/bcr.apk
+
+          if git diff --staged --quiet; then
+            echo "No new version found. The APK is already up to date."
+          else
+            echo "New version found! Committing..."
+            git commit -m "Version ${{ env.TAG }}"
+            git push
+          fi
