@@ -1,0 +1,14 @@
+android_app {
+    name: "HelixWallpapers",
+    manifest: "AndroidManifest.xml",
+    resource_dirs: ["res"],
+    certificate: "platform",
+    privileged: false,
+    product_specific: true,
+    optimize: {
+        enabled: false,
+    },
+    aaptflags: [
+        "--auto-add-overlay",
+    ],
+}
