@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wallpapers>
+    <category
+        id="helix_wallpapers"
+        title="@string/helix_wallpapers_category_title"
+        featured="red"
+        priority="90">
+
+        <static-wallpaper
+            id="red"
+            src="@drawable/helix_wallpaper_red"
+            title="@string/helix_wallpaper_red_title" />
+
+        <static-wallpaper
+            id="white"
+            src="@drawable/helix_wallpaper_white"
+            title="@string/helix_wallpaper_white_title" />
+
+        <static-wallpaper
+            id="purple"
+            src="@drawable/helix_wallpaper_purple"
+            title="@string/helix_wallpaper_purple_title" />
+
+        <static-wallpaper
+            id="pink"
+            src="@drawable/helix_wallpaper_pink"
+            title="@string/helix_wallpaper_pink_title" />
+
+        <static-wallpaper
+            id="yellow"
+            src="@drawable/helix_wallpaper_yellow"
+            title="@string/helix_wallpaper_yellow_title" />
+
+    </category>
+</wallpapers>

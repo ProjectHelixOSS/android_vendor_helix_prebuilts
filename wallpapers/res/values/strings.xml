@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="helix_wallpapers_category_title">Helix Wallpapers</string>
+    <string name="helix_wallpaper_purple_title">Purple</string>
+    <string name="helix_wallpaper_pink_title">Pink</string>
+    <string name="helix_wallpaper_white_title">White</string>
+    <string name="helix_wallpaper_yellow_title">Yellow</string>
+    <string name="helix_wallpaper_red_title">Red</string>
+</resources>

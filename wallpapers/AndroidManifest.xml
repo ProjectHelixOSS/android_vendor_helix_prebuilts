@@ -4,6 +4,16 @@
 
     <application
         android:hasCode="false"
-        android:extractNativeLibs="false" />
+        android:extractNativeLibs="false">
+
+        <receiver
+            android:name=".PartnerReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.launcher3.action.PARTNER_CUSTOMIZATION" />
+            </intent-filter>
+        </receiver>
+
+    </application>
 
 </manifest>
