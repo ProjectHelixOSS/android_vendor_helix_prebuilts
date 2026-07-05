@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.helixos.wallpapers">
 
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
-        android:hasCode="false"
+        android:hasCode="true"
         android:extractNativeLibs="false">
 
         <receiver
@@ -13,6 +16,18 @@
                 <action android:name="com.android.launcher3.action.PARTNER_CUSTOMIZATION" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".ThemeWallpaperService"
+            android:exported="false" />
 
     </application>
 
