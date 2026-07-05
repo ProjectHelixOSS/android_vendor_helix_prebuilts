@@ -3,7 +3,7 @@
     <category
         id="helix_wallpapers"
         title="@string/helix_wallpapers_category_title"
-        featured="red"
+        featured="yellow"
         priority="90">
 
         <static-wallpaper
