@@ -10,17 +10,17 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 
-import androidx.annotation.Nullable;
-
 import java.io.IOException;
 
 /**
- * Watches Settings.Secure.USER_SETUP_COMPLETE for the moment setup finishes,
- * then applies white wallpaper if the user chose Light theme (yellow is
- * already the boot default, so Dark requires no action). Stops itself once
- * done; never runs again after that.
+ * Watches Settings.Secure "user_setup_complete" for the moment setup
+ * finishes, then applies white wallpaper if the user chose Light theme
+ * (yellow is already the boot default, so Dark requires no action). Stops
+ * itself once done; never runs again after that.
  */
 public class ThemeWallpaperService extends Service {
+
+    private static final String USER_SETUP_COMPLETE = "user_setup_complete";
 
     private ContentObserver mObserver;
 
@@ -33,7 +33,7 @@ public class ThemeWallpaperService extends Service {
             public void onChange(boolean selfChange, Uri uri) {
                 int setupComplete = Settings.Secure.getInt(
                         getContentResolver(),
-                        Settings.Secure.USER_SETUP_COMPLETE, 0);
+                        USER_SETUP_COMPLETE, 0);
                 if (setupComplete == 1) {
                     applyThemeWallpaper();
                     getContentResolver().unregisterContentObserver(mObserver);
@@ -42,7 +42,7 @@ public class ThemeWallpaperService extends Service {
             }
         };
         getContentResolver().registerContentObserver(
-                Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE),
+                Settings.Secure.getUriFor(USER_SETUP_COMPLETE),
                 false, mObserver);
     }
 
@@ -72,7 +72,6 @@ public class ThemeWallpaperService extends Service {
         super.onDestroy();
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
