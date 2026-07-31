@@ -14,14 +14,24 @@ jobs:
       - name: Fetch, download, and extract APK
         id: fetch_release
         run: |
-          LATEST_RELEASE=$(curl -s https://api.github.com/repos/chenxiaolong/BCR/releases/latest)
-          LATEST_TAG=$(echo "$LATEST_RELEASE" | jq -r .tag_name)
+          RELEASES=$(curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/chenxiaolong/BCR/releases?per_page=20")
+
+          LATEST_RELEASE=$(echo "$RELEASES" | jq -c '[.[] | select(.draft == false)] | first')
+          LATEST_TAG=$(echo "$LATEST_RELEASE" | jq -r '.tag_name // empty')
+
+          if [ -z "$LATEST_TAG" ]; then
+            echo "Error: Could not determine a valid upstream release tag!"
+            exit 1
+          fi
+
           echo "Latest upstream tag: $LATEST_TAG"
           echo "TAG=$LATEST_TAG" >> $GITHUB_ENV
 
-          ZIP_URL=$(echo "$LATEST_RELEASE" | jq -r '.assets[] | select(.name | endswith(".zip")) | .browser_download_url' | head -n 1)
+          ZIP_URL=$(echo "$LATEST_RELEASE" | jq -r '(.assets // []) | map(select(.name | endswith(".zip"))) | .[0].browser_download_url // empty')
 
-          if [ -z "$ZIP_URL" ] || [ "$ZIP_URL" == "null" ]; then
+          if [ -z "$ZIP_URL" ]; then
             echo "Error: No ZIP found in the latest release!"
             exit 1
           fi
